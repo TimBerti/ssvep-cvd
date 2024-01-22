@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.signal import butter, lfilter, cwt, morlet2
 from sklearn.cross_decomposition import CCA
+from sklearn.linear_model import RANSACRegressor
 from collections import Counter
 
 sns.set_theme('notebook', 'whitegrid', 'dark')
@@ -40,13 +41,21 @@ def plot_eeg(eeg_data, sampling_rate=DEFAULT_SAMPLING_RATE):
     ax.set_yticklabels([f"Channel {i}" for i in range(num_channels)])
     return plt
 
-def filter_extreme_values(eeg_data, threshold_factor=3, centering=np.mean):
-    eeg_data = eeg_data - centering(eeg_data, axis=0)
-    threshold = threshold_factor * np.std(eeg_data, axis=0)
-    return np.where(np.abs(eeg_data) > threshold, 0, eeg_data)
-
 def apply_linear_detrending(eeg_data):
     return np.apply_along_axis(lambda x: x - np.polyval(np.polyfit(np.arange(len(x)), x, 1), np.arange(len(x))), 0, eeg_data)
+
+def apply_ransac_detrending(eeg_data, ransac_iterations=100, ransac_min_samples=None):
+    X = np.arange(eeg_data.shape[0]).reshape(-1, 1)
+    for i in range(eeg_data.shape[1]):
+        ransac = RANSACRegressor(min_samples=ransac_min_samples, max_trials=ransac_iterations)
+        ransac.fit(X, eeg_data[:, i])
+        eeg_data[:, i] -= ransac.predict(X)
+    return eeg_data
+
+def filter_extreme_values(eeg_data, threshold_factor=3):
+    eeg_data = eeg_data - np.mean(eeg_data, axis=0)
+    threshold = threshold_factor * np.std(eeg_data, axis=0)
+    return np.where(np.abs(eeg_data) > threshold, 0, eeg_data)
 
 def apply_lowpass_filter(eeg_data, cutoff=35, filter_order=5, sampling_rate=DEFAULT_SAMPLING_RATE):
     normalized_cutoff = cutoff / (0.5 * sampling_rate)

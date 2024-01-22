@@ -35,6 +35,31 @@ Plot EEG data.
 - **matplotlib.pyplot** : Plot object  
   The plot of EEG data.
 
+### `apply_linear_detrending(eeg_data)`
+Apply linear detrending to EEG data.
+
+#### Parameters
+- **eeg_data** : ndarray  
+  The EEG data for detrending.
+
+#### Returns
+- **ndarray** : Detrended EEG data.
+
+### `apply_ransac_detrending(eeg_data, ransac_iterations, ransac_min_samples)`
+Apply RANSAC (RANdom SAmple Consensus) detrending to EEG data. This method fits a linear model to the data with robustness to outliers.
+
+#### Parameters
+- **eeg_data** : ndarray  
+  The EEG data for detrending.
+- **ransac_iterations** : int, optional  
+  The number of iterations for the RANSAC algorithm. Default is 100.
+- **ransac_min_samples** : int, optional  
+  The minimum number of samples to be considered as a consensus set in each iteration of RANSAC. Default is None.
+
+#### Returns
+- **ndarray** : Detrended EEG data.  
+  The EEG data after RANSAC detrending has been applied.
+
 ### `filter_extreme_values(eeg_data, threshold_factor, centering)`
 Filter extreme values from EEG data based on the specified threshold times the signals standard deviation.
 
@@ -48,16 +73,6 @@ Filter extreme values from EEG data based on the specified threshold times the s
 
 #### Returns
 - **ndarray** : Filtered EEG data.
-
-### `apply_linear_detrending(eeg_data)`
-Apply linear detrending to EEG data.
-
-#### Parameters
-- **eeg_data** : ndarray  
-  The EEG data for detrending.
-
-#### Returns
-- **ndarray** : Detrended EEG data.
 
 ### `apply_lowpass_filter(eeg_data, cutoff, filter_order, sampling_rate)`
 Apply a lowpass filter to EEG data.
