@@ -4,7 +4,7 @@ This toolkit provides a set of functions to analyze electroencephalogram (EEG) d
 
 ## Usage
 
-An example of using the toolkit is shown in ssvep_analysis.ipynb.
+An example of using the toolkit is shown in [ssvep_analysis.ipynb](../notebooks/ssvep_analysis.ipynb).
 
 ## Functions
 
