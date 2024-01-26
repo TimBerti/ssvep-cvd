@@ -305,3 +305,59 @@ This toolkit requires Python 3.x and the following packages:
 - scipy
 - scikit-learn
 
+# EEG Signal Preprocessing and Transformation Toolkit
+
+This toolkit offers classes for preprocessing and transforming electroencephalogram (EEG) data, including detrending, filtering, reducing signal dimensions, and applying wavelet transforms. These classes are designed to be compatible with scikit-learn's estimator and transformer interfaces.
+
+## Classes
+
+### `Preprocessor`
+A scikit-learn compatible transformer for preprocessing EEG signals.
+
+#### Parameters
+- **n_jobs** : int, optional  
+  The number of jobs to run in parallel. `-1` means using all processors. Default is `-1`.
+- **max_len** : int  
+  Maximum length to which the signals will be padded. Default is `8000`.
+- **sampling_rate** : float  
+  The sampling rate of the EEG data. Default is `250`.
+- **stimulus_frequency** : float  
+  The stimulus frequency used in signal processing. Default is `16.5`.
+
+#### Methods
+- `transform(X)`  
+  Transform the provided EEG data by applying the following sequence of preprocessing steps:
+  1. Apply RANSAC detrending.
+  2. Filter extreme values.
+  3. Apply a lowpass filter.
+  4. Apply a highpass filter.
+  5. Apply a notch filter.
+  6. Compute a reduced signal using CCA.
+  7. Pad the signal to the maximum length. 
+
+### `WaveletTransformer`
+A transformer for applying a wavelet transform to EEG data.
+
+#### Parameters
+- **w** : int  
+  The wavelet parameter w. Default is `50`.
+- **sampling_rate** : float  
+  The sampling rate of the EEG data. Default is `250`.
+- **frequency** : float  
+  The frequency to be used for the wavelet transform. Default is `16.5`.
+
+#### Methods
+- `transform(X)`  
+  Apply the wavelet transform to the provided EEG data.
+
+### `Subsampler`
+A transformer for subsampling EEG data.
+
+#### Parameters
+- **n_samples** : int  
+  The number of samples to subsample the EEG data to. Default is `100`.
+
+#### Methods
+- `transform(X)`  
+  Subsample the provided EEG data.
+
