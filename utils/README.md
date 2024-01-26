@@ -307,7 +307,7 @@ This toolkit requires Python 3.x and the following packages:
 
 # EEG Signal Preprocessing and Transformation Toolkit
 
-This toolkit offers classes for preprocessing and transforming electroencephalogram (EEG) data, including detrending, filtering, reducing signal dimensions, and applying wavelet transforms. These classes are designed to be compatible with scikit-learn's estimator and transformer interfaces.
+This toolkit offers classes for preprocessing and transforming EEG data, including detrending, filtering, reducing signal dimensions, and applying wavelet transforms. These classes are designed to be compatible with scikit-learn's estimator and transformer interfaces.
 
 ## Classes
 
