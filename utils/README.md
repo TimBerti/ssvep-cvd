@@ -309,6 +309,10 @@ This toolkit requires Python 3.x and the following packages:
 
 This toolkit offers classes for preprocessing and transforming EEG data, including detrending, filtering, reducing signal dimensions, and applying wavelet transforms. These classes are designed to be compatible with scikit-learn's estimator and transformer interfaces.
 
+## Usage
+
+An example of using the toolkit is shown in [cwt_svm_classifier.ipynb](../notebooks/cwt_svm_classifier.ipynb).
+
 ## Classes
 
 ### `Preprocessor`
