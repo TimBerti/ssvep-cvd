@@ -20,7 +20,8 @@ def update_default_stimulus_frequency(new_stimulus_frequency):
     global DEFAULT_STIMULUS_FREQUENCY
     DEFAULT_STIMULUS_FREQUENCY = new_stimulus_frequency
 
-def plot_eeg(eeg_data, sampling_rate=DEFAULT_SAMPLING_RATE):
+def plot_eeg(eeg_data, sampling_rate=None):
+    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
     eeg_data = eeg_data - np.mean(eeg_data, axis=0)
 
     num_channels = eeg_data.shape[1]
@@ -57,33 +58,40 @@ def filter_extreme_values(eeg_data, threshold_factor=3):
     threshold = threshold_factor * np.std(eeg_data, axis=0)
     return np.where(np.abs(eeg_data) > threshold, 0, eeg_data)
 
-def apply_lowpass_filter(eeg_data, cutoff=35, filter_order=5, sampling_rate=DEFAULT_SAMPLING_RATE):
+def apply_lowpass_filter(eeg_data, cutoff=35, filter_order=5, sampling_rate=None):
+    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
     normalized_cutoff = cutoff / (0.5 * sampling_rate)
     b, a = butter(filter_order, normalized_cutoff, btype='low')
     return np.apply_along_axis(lambda x: lfilter(b, a, x), 0, eeg_data)
 
-def apply_highpass_filter(eeg_data, cutoff=1, filter_order=5, sampling_rate=DEFAULT_SAMPLING_RATE):
+def apply_highpass_filter(eeg_data, cutoff=1, filter_order=5, sampling_rate=None):
+    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
     normalized_cutoff = cutoff / (0.5 * sampling_rate)
     b, a = butter(filter_order, normalized_cutoff, btype='high')
     return np.apply_along_axis(lambda x: lfilter(b, a, x), 0, eeg_data)
 
-def apply_notch_filter(eeg_data, notch_freq=50, bandwidth=3, filter_order=5, sampling_rate=DEFAULT_SAMPLING_RATE):
+def apply_notch_filter(eeg_data, notch_freq=50, bandwidth=3, filter_order=5, sampling_rate=None):
+    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
     low = (notch_freq - bandwidth/2) / (0.5 * sampling_rate)
     high = (notch_freq + bandwidth/2) / (0.5 * sampling_rate)
     b, a = butter(filter_order, [low, high], btype='bandstop')
     return np.apply_along_axis(lambda x: lfilter(b, a, x), 0, eeg_data)
 
-def compute_cca(eeg_data, n_components=1, n_harmonics=2, sampling_rate=DEFAULT_SAMPLING_RATE, stimulus_frequency=DEFAULT_STIMULUS_FREQUENCY):
+def compute_cca(eeg_data, n_components=1, n_harmonics=2, sampling_rate=None, stimulus_frequency=None):
     """
     Computes Canonical Correlation Analysis between the EEG data and a generated reference signal 
     with n_harmonics harmonics of the stimulus frequency.
     """
+    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
+    stimulus_frequency = stimulus_frequency if stimulus_frequency else DEFAULT_STIMULUS_FREQUENCY
     cca = CCA(n_components=n_components)
     target = generate_reference_signals(n_harmonics, eeg_data.shape[0], sampling_rate, stimulus_frequency)
     cca.fit(eeg_data, target)
     return cca, target
 
-def generate_reference_signals(n_harmonics, length, sampling_rate=DEFAULT_SAMPLING_RATE, stimulus_frequency=DEFAULT_STIMULUS_FREQUENCY):
+def generate_reference_signals(n_harmonics, length, sampling_rate=None, stimulus_frequency=None):
+    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
+    stimulus_frequency = stimulus_frequency if stimulus_frequency else DEFAULT_STIMULUS_FREQUENCY
     time_values = np.arange(0, length / sampling_rate, 1 / sampling_rate)
     signals = []
     for harmonic in range(n_harmonics):
@@ -91,15 +99,18 @@ def generate_reference_signals(n_harmonics, length, sampling_rate=DEFAULT_SAMPLI
         signals.append(np.cos(2 * np.pi * stimulus_frequency * (harmonic + 1) * time_values))
     return np.column_stack(signals)
 
-def compute_reduced_signal(eeg_data, n_components=1, n_harmonics=2, sampling_rate=DEFAULT_SAMPLING_RATE, stimulus_frequency=DEFAULT_STIMULUS_FREQUENCY):
+def compute_reduced_signal(eeg_data, n_components=1, n_harmonics=2, sampling_rate=None, stimulus_frequency=None):
     """
     Reduces EEG data to n_components dimensions using CCA.
     """
+    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
+    stimulus_frequency = stimulus_frequency if stimulus_frequency else DEFAULT_STIMULUS_FREQUENCY
     cca, _ = compute_cca(eeg_data, n_components, n_harmonics, sampling_rate, stimulus_frequency)
     reduced_signal = cca.transform(eeg_data).flatten()
     return reduced_signal, cca.coef_
 
-def compute_power_spectrum(eeg_data, sampling_rate=DEFAULT_SAMPLING_RATE):
+def compute_power_spectrum(eeg_data, sampling_rate=None):
+    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
     spectrum = np.abs(np.fft.rfft(eeg_data, axis=0))
     frequencies = np.fft.rfftfreq(eeg_data.shape[0], 1.0/sampling_rate)
     return frequencies, spectrum
@@ -120,7 +131,9 @@ def plot_coefficient_matrix(coefficient_matrix):
     plt.ylabel('Harmonic / Phase')
     return plt
 
-def compute_running_r_values(eeg_data, marker=None, n_components=1, n_harmonics=2, window_duration=2, step_size=40, sampling_rate=DEFAULT_SAMPLING_RATE):
+def compute_running_r_values(eeg_data, marker=None, n_components=1, n_harmonics=2, window_duration=2, step_size=40, sampling_rate=None, stimulus_frequency=None):
+    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
+    stimulus_frequency = stimulus_frequency if stimulus_frequency else DEFAULT_STIMULUS_FREQUENCY
     N_samples = eeg_data.shape[0]
     window_size = window_duration * sampling_rate
     step_size = step_size
@@ -135,7 +148,7 @@ def compute_running_r_values(eeg_data, marker=None, n_components=1, n_harmonics=
             # If there are multiple markers in the window, take the most common one
             marker_values.append(Counter(marker[start_idx:start_idx+window_size]).most_common(1)[0][0])
         
-        cca, target = compute_cca(eeg_window, n_components, n_harmonics)
+        cca, target = compute_cca(eeg_window, n_components, n_harmonics, sampling_rate, stimulus_frequency)
         x, y = cca.transform(eeg_window, target)
         r = np.corrcoef(x.T, y.T)[0, 1]
         

@@ -4,6 +4,7 @@ from joblib import Parallel, delayed
 from sklearn.base import BaseEstimator, TransformerMixin
 from . import ssvep_analysis as sa
 
+
 class Preprocessor(BaseEstimator, TransformerMixin):
     def __init__(
         self,
@@ -54,7 +55,6 @@ class Preprocessor(BaseEstimator, TransformerMixin):
         x, _ = sa.compute_reduced_signal(x, n_components=self.cca_components, n_harmonics=self.cca_harmonics)
         x = np.concatenate((x, np.zeros(self.max_len - len(x))))
         return x
-
 
 class WaveletTransformer(BaseEstimator, TransformerMixin):
     def __init__(self, w=50, sampling_rate=250, frequency=16.5):
