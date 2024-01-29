@@ -318,11 +318,29 @@ A scikit-learn compatible transformer for preprocessing EEG signals.
 - **n_jobs** : int, optional  
   The number of jobs to run in parallel. `-1` means using all processors. Default is `-1`.
 - **max_len** : int  
-  Maximum length to which the signals will be padded. Default is `8000`.
+  Maximum length to which the signals will be padded or truncated. Default is `8000`.
 - **sampling_rate** : float  
   The sampling rate of the EEG data. Default is `250`.
 - **stimulus_frequency** : float  
   The stimulus frequency used in signal processing. Default is `16.5`.
+- **ransac_iterations** : int  
+  The number of iterations for the RANSAC algorithm used in detrending. Default is `100`.
+- **ransac_min_samples** : int or None  
+  The minimum number of samples to be considered as a consensus set in each iteration of RANSAC. If `None`, a default value is used by the RANSAC algorithm. Default is `None`.
+- **filter_threshold_factor** : float  
+  The factor to determine the threshold for extreme values in filtering. Default is `3`.
+- **lowpass_cutoff** : float  
+  The cutoff frequency for the lowpass filter. Default is `35`.
+- **highpass_cutoff** : float  
+  The cutoff frequency for the highpass filter. Default is `1`.
+- **notch_freq** : float  
+  The center frequency for the notch filter. Default is `50`.
+- **notch_width** : float  
+  The bandwidth of the notch filter. Default is `3`.
+- **cca_components** : int  
+  Number of components to keep in Canonical Correlation Analysis. Default is `1`.
+- **cca_harmonics** : int  
+  Number of harmonics of the stimulus frequency in Canonical Correlation Analysis. Default is `2`.
 
 #### Methods
 - `transform(X)`  
