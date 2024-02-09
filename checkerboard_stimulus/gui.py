@@ -58,13 +58,13 @@ class CheckerBoardGUI:
             {"preset": "black-and-white", "duration": 4.0},
             {"preset": "grey", "duration": 4.0},
         ],
-        "mixed-deuteranomaly-series": [
-            {"preset": "grey", "duration": 4.0},
-            {"preset": "black-and-white", "duration": 4.0},
-            {"preset": "grey", "duration": 4.0},
-            {"preset": "deuteranomaly-red", "duration": 4.0},
-            {"preset": "grey", "duration": 4.0},
-        ],
+        # "mixed-deuteranomaly-series": [
+        #     {"preset": "grey", "duration": 4.0},
+        #     {"preset": "black-and-white", "duration": 4.0},
+        #     {"preset": "grey", "duration": 4.0},
+        #     {"preset": "deuteranomaly-red", "duration": 4.0},
+        #     {"preset": "grey", "duration": 4.0},
+        # ],
         # "mixed-protanomaly-series": [
         #     {"preset": "grey", "duration": 4.0},
         #     {"preset": "black-and-white", "duration": 4.0},
