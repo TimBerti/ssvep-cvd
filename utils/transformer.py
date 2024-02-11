@@ -1,7 +1,6 @@
 import numpy as np
 from scipy.signal import cwt, morlet2
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.decomposition import PCA
 
 
 class WaveletTransformer(BaseEstimator, TransformerMixin):
@@ -28,17 +27,3 @@ class Subsampler(BaseEstimator, TransformerMixin):
     def transform(self, X):
         idx_mask = X.shape[1] // self.n_samples * np.arange(self.n_samples)
         return X[:, idx_mask]
-    
-class PcaRankReducer(BaseEstimator, TransformerMixin):
-    def __init__(self, n_components=10):
-        self.n_components = n_components
-
-    def fit(self, X, y=None):
-        return self
-    
-    def transform(self, X):
-        return np.array([self._first_principal_component(x) for x in X])
-    
-    def _first_principal_component(self, X):
-        pca = PCA(n_components=1)
-        return pca.fit_transform(X).flatten()
