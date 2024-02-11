@@ -1,6 +1,6 @@
 # EEG Signal Analysis Toolkit
 
-This toolkit provides a set of functions to analyze electroencephalogram (EEG) data. It includes utilities for filtering, plotting, and transforming EEG signals, as well as computing Canonical Correlation Analysis (CCA) and wavelet transforms.
+[ssvep_analysis.py](../utils/ssvep_analysis.py) provides a set of functions to analyze electroencephalogram (EEG) data. It includes utilities for filtering, plotting, and transforming EEG signals, as well as computing Canonical Correlation Analysis (CCA) and wavelet transforms.
 
 ## Usage
 
@@ -296,8 +296,6 @@ Plot a time signal.
   The plot of the time signal.
 
 ## Requirements
-
-This toolkit requires Python 3.x and the following packages:
 - numpy
 - pandas
 - matplotlib
@@ -305,13 +303,13 @@ This toolkit requires Python 3.x and the following packages:
 - scipy
 - scikit-learn
 
-# EEG Signal Preprocessing and Transformation Toolkit
+# Transformer
 
-This toolkit offers classes for preprocessing and transforming EEG data, including detrending, filtering, reducing signal dimensions, and applying wavelet transforms. These classes are designed to be compatible with scikit-learn's estimator and transformer interfaces.
+[transformer.py](../utils/transformer.py) offers classes for applying wavelet transforms and subsampling. These classes are designed to be compatible with scikit-learn's estimator and transformer interfaces.
 
 ## Usage
 
-An example of using the toolkit is shown in [cwt_svm_classifier.ipynb](../notebooks/cwt_svm_classifier.ipynb).
+An example of using the toolkit is shown in [cca_cwt_svm_classifier.ipynb](../notebooks/cca_cwt_svm_classifier.ipynb).
 
 ## Classes
 
@@ -341,3 +339,53 @@ A transformer for subsampling EEG data.
 - `transform(X)`  
   Subsample the provided EEG data.
 
+## Requirements
+- numpy
+- scipy
+- scikit-learn
+
+# Kernel Functions
+
+[kernels.py](../utils/kernels.py) provides custom kernel functions. These kernels include a cosine similarity-based RBF kernel and a generalized cone kernel, which can be useful in various applications including clustering, classification, and dimensionality reduction tasks.
+
+## Usage
+
+An example of using these kernel is shown in [cca_cwt_svm_classifier.ipynb](../notebooks/cca_cwt_svm_classifier.ipynb).
+
+## Functions
+
+### `cosine_rbf_kernel`
+A kernel function that combines the Radial Basis Function (RBF) kernel with cosine similarity.
+
+#### Parameters
+- **X** : array-like, shape (n_samples_X, n_features)  
+  Input data.
+- **Y** : array-like, shape (n_samples_Y, n_features), optional  
+  Input data. If `None`, the kernel is calculated among the samples of `X`.
+- **gamma** : float, optional  
+  Kernel coefficient. If `None`, `gamma` is set to `1 / n_features`.
+
+#### Returns
+- **K** : array, shape (n_samples_X, n_samples_Y)  
+  The computed kernel matrix.
+
+### `generalized_cone_kernel`
+A kernel function that generalizes the concept of cone kernels, incorporating both Euclidean distance and cosine similarity, adjusted by an alpha parameter based on the norms of data points.
+
+#### Parameters
+- **X** : array-like, shape (n_samples_X, n_features)  
+  Input data.
+- **Y** : array-like, shape (n_samples_Y, n_features), optional  
+  Input data. If `None`, the kernel is calculated among the samples of `X`.
+- **gamma** : float, optional  
+  Kernel coefficient for the distance component. If `None`, `gamma` is set to `1 / n_features`.
+- **beta** : float, optional  
+  Coefficient for the norm-based exponential weighting. If `None`, `beta` is automatically determined based on the standard deviation of the sum of norms.
+
+#### Returns
+- **K** : array, shape (n_samples_X, n_samples_Y)  
+  The computed kernel matrix.
+
+## Requirements
+- numpy
+- scikit-learn
