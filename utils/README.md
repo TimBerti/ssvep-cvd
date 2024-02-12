@@ -350,7 +350,7 @@ A transformer for subsampling EEG data.
 
 ## Usage
 
-An example of using these kernel is shown in [cca_cwt_svm_classifier.ipynb](../notebooks/cca_cwt_svm_classifier.ipynb).
+A more detailed explanation can be found in [generalized_cone_kernel.ipynb](../notebooks/generalized_cone_kernel.ipynb).
 
 ## Functions
 
