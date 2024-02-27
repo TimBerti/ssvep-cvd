@@ -143,7 +143,8 @@ class CheckerBoardGUI:
             {"preset": "grey", "duration": 2},
         ]
         for i in range(n):
-            a = i / n
+            a = (1/2) ** (i/n)
+            print(a)
             color1 = (base_color1 * a + base_color2 * (1 - a)).astype(int)
             color2 = (base_color2 * a + base_color1 * (1 - a)).astype(int)
             self.PRESETS[f"preset_{i}"] = {"color1": ",".join(map(str, color1)), "color2": ",".join(map(str, color2))}
