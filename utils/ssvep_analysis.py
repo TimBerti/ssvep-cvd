@@ -73,6 +73,13 @@ def apply_highpass_filter(eeg_data, cutoff=1, filter_order=5, sampling_rate=None
     b, a = butter(filter_order, normalized_cutoff, btype='high')
     return np.apply_along_axis(lambda x: lfilter(b, a, x), 0, eeg_data)
 
+def apply_bandpass_filter(eeg_data, lowcut=1, highcut=35, filter_order=5, sampling_rate=None):
+    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
+    low = lowcut / (0.5 * sampling_rate)
+    high = highcut / (0.5 * sampling_rate)
+    b, a = butter(filter_order, [low, high], btype='band')
+    return np.apply_along_axis(lambda x: lfilter(b, a, x), 0, eeg_data)
+
 def apply_notch_filter(eeg_data, notch_freq=50, bandwidth=3, filter_order=5, sampling_rate=None):
     sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
     low = (notch_freq - bandwidth/2) / (0.5 * sampling_rate)

@@ -105,6 +105,24 @@ Apply a highpass filter to EEG data.
 #### Returns
 - **ndarray** : Filtered EEG data.
 
+### `apply_bandpass_filter(eeg_data, lowcut, highcut, filter_order, sampling_rate)`
+Apply a bandpass filter to EEG data.
+
+#### Parameters
+- **eeg_data** : ndarray  
+  The EEG data to be filtered.
+- **lowcut** : float, optional
+  The low cutoff frequency for the filter. Default is 1 Hz.
+- **highcut** : float, optional
+  The high cutoff frequency for the filter. Default is 35 Hz.
+- **filter_order** : int, optional  
+  The order of the filter. Default is 5.
+- **sampling_rate** : float, optional
+  The sampling rate of the EEG data. Default is `DEFAULT_SAMPLING_RATE`.
+
+#### Returns
+- **ndarray** : Filtered EEG data.
+
 ### `apply_notch_filter(eeg_data, notch_freq, bandwidth, filter_order, sampling_rate)`
 Apply a notch filter to EEG data.
 
