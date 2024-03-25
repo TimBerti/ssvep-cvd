@@ -54,10 +54,11 @@ def apply_ransac_detrending(eeg_data, ransac_iterations=100, ransac_min_samples=
         eeg_data[:, i] -= ransac.predict(X)
     return eeg_data
 
-def filter_extreme_values(eeg_data):
+def remove_artefacts(eeg_data, threshold=8):
     eeg_diff = np.diff(eeg_data, axis=0)
     diff_iqr = iqr(eeg_diff, axis=0)
-    eeg_diff = np.where(np.abs(eeg_diff) > 8 * diff_iqr, 0, eeg_diff)
+    eeg_diff = np.where(np.abs(eeg_diff) > threshold * diff_iqr, 0, eeg_diff)
+    eeg_diff = np.insert(eeg_diff, 0, eeg_data[0], axis=0)
     return np.cumsum(eeg_diff, axis=0)
 
 def apply_lowpass_filter(eeg_data, cutoff=35, filter_order=5, sampling_rate=None):

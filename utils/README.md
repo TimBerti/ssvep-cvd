@@ -60,19 +60,18 @@ Apply RANSAC (RANdom SAmple Consensus) detrending to EEG data. This method fits 
 - **ndarray** : Detrended EEG data.  
   The EEG data after RANSAC detrending has been applied.
 
-### `filter_extreme_values(eeg_data, threshold_factor, centering)`
-Filter extreme values from EEG data based on the specified threshold times the signals standard deviation.
+### `remove_artefacts(eeg_data, threshold=8)`
+Remove artifacts from EEG data by identifying and nullifying extreme changes that exceed a specified threshold based on the interquartile range (IQR) of the data's first difference. This method helps in cleaning the EEG signal by mitigating the effects of large, non-physiological spikes or drops.
 
 #### Parameters
 - **eeg_data** : ndarray  
-  The EEG data to be filtered.
-- **threshold_factor** : float, optional  
-  The factor to determine the threshold for extreme values. Default is 3.
-- **centering** : function, optional  
-  The function to center the data. Default is `np.mean`.
+  The EEG data from which artifacts are to be removed.
+- **threshold** : float, optional  
+  The multiplier used in conjunction with the IQR to define what constitutes an extreme change in the EEG signal. The default value is 8, meaning that any change greater than 8 times the IQR of the first difference of the data is considered an artifact.
 
 #### Returns
-- **ndarray** : Filtered EEG data.
+- **ndarray** : Artifact-removed EEG data.
+
 
 ### `apply_lowpass_filter(eeg_data, cutoff, filter_order, sampling_rate)`
 Apply a lowpass filter to EEG data.
