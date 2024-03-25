@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.signal import butter, lfilter, cwt, morlet2
+from scipy.stats import iqr
 from sklearn.cross_decomposition import CCA
 from sklearn.linear_model import RANSACRegressor
 from collections import Counter
@@ -53,10 +54,11 @@ def apply_ransac_detrending(eeg_data, ransac_iterations=100, ransac_min_samples=
         eeg_data[:, i] -= ransac.predict(X)
     return eeg_data
 
-def filter_extreme_values(eeg_data, threshold_factor=3):
-    eeg_data = eeg_data - np.mean(eeg_data, axis=0)
-    threshold = threshold_factor * np.std(eeg_data, axis=0)
-    return np.where(np.abs(eeg_data) > threshold, 0, eeg_data)
+def filter_extreme_values(eeg_data):
+    eeg_diff = np.diff(eeg_data, axis=0)
+    diff_iqr = iqr(eeg_diff, axis=0)
+    eeg_diff = np.where(np.abs(eeg_diff) > 8 * diff_iqr, 0, eeg_diff)
+    return np.cumsum(eeg_diff, axis=0)
 
 def apply_lowpass_filter(eeg_data, cutoff=35, filter_order=5, sampling_rate=None):
     sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
