@@ -4,7 +4,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 
 
 class WaveletTransformer(BaseEstimator, TransformerMixin):
-    def __init__(self, w_list=[50], sampling_rate=250, frequency_range=(16, 17), n_frequencies=50, n_samples=None):
+    def __init__(self, w_list=[50], sampling_rate=250, frequency_range=(16, 17), n_frequencies=100, n_samples=None):
         self.w_list = w_list
         self.sampling_rate = sampling_rate
         self.frequency_range = frequency_range
