@@ -92,7 +92,7 @@ with $\alpha = \exp\{-\beta (\|x\| + \|y\|)\}$. For more information see [notebo
 
 The hyperparameters of the Wavelet Transforms, PCA, kernel and SVM were optimized using Bayesian optimization. The objective function was the harmonic mean of the cross-validation accuracies, where the cross-validation was done using a leave-one-out strategy for each subject. 
 
-The harmonic mean was chosen because it is more sensitive to infrequent low values than the arithmetic mean, encouraging the model to perform well on all subjects, not just the majority.
+The harmonic mean was chosen because it is more sensitive to infrequent low values than the arithmetic mean, encouraging the model to perform well on all subjects, not just the majority. 
 
 The hyperparameter tuning can be found in [notebooks/svm_hyperparameters.ipynb](./notebooks/svm_hyperparameters.ipynb).
 
