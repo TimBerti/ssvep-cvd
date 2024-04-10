@@ -68,7 +68,7 @@ For each subject 15 measurements without simulated CVD were recorded and for the
 
 ## Data Preprocessing
 
-Sometimes the EEG had random spikes, because the Bluetooth connection failed for a few milliseconds, causing the buffer of the EEG to overfill. These spikes were removed by taking the first difference of the signal, setting all values above a certain threshold to zero, and then integrating the signal again. In addition, a bandpass and a notch filter were applied to the signal.
+During some measurements the EEG had random spikes, because the Bluetooth connection failed for a few milliseconds, causing the buffer of the EEG to overfill. These spikes were removed by taking the first difference of the signal, setting all values above a certain threshold to zero, and then integrating the signal again. In addition, a bandpass and a notch filter were applied to the signal.
 
 The 8 dimensional EEG signal was then reduced to a 1 dimensional signal using Canonical Correlation Analysis with a generated reference signal, consisting of a sine and a cosine wave at the stimulus frequency and its second harmonic.
 
