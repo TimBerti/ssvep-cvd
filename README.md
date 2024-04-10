@@ -88,7 +88,9 @@ $$
 k(x, y) = \exp\{-\gamma \cdot [\alpha \cdot \|x-y\|^2 + (1-\alpha) \cdot 2\cdot(1-\frac{x \cdot y}{\|x\|\|y\|})]\}
 $$
 
-with $\alpha = \exp\{-\beta (\|x\| + \|y\|)\}$. 
+$$
+\mathrm{with} \quad \alpha = \exp\{-\beta (\|x\| + \|y\|)\}.
+$$ 
 
 For more information on the kernel see [notebooks/generalized_cone_kernel.ipynb](./notebooks/generalized_cone_kernel.ipynb).
 
