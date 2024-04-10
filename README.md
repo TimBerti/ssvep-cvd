@@ -30,7 +30,7 @@ $$
 Constraints: 
 
 $$
-c_1, c_2 \in [0, 1]^3, \quad M\,c_1 = M\,c_2
+c_1, c_2 \in [0, 1]^3, \quad M \, c_1 = M \, c_2
 $$
 
 with $c_1$ and $c_2$ being colors in RGB space and $M$ being the transformation matrix for specific CVD.
