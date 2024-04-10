@@ -88,7 +88,7 @@ $$
 k(x, y) = \exp\{-\gamma \cdot [\alpha \cdot \|x-y\|^2 + (1-\alpha) \cdot 2\cdot(1-\frac{x \cdot y}{\|x\|\|y\|})]\}
 $$
 
-with $\alpha = \exp\{-\beta (\|x\| + \|y\|)\}$. For more information see [notebooks/generalized_cone_kernel.ipynb](/notebooks/generalized_cone_kernel.ipynb).
+with $\alpha = \exp\{-\beta (\|x\| + \|y\|)\}$. For more information see [notebooks/generalized_cone_kernel.ipynb](./notebooks/generalized_cone_kernel.ipynb).
 
 The hyperparameters of the Wavelet Transforms, PCA, kernel and SVM were optimized using Bayesian optimization. The objective function was the harmonic mean of the cross-validation accuracies, where the cross-validation was done using a leave-one-out strategy for each subject.
 
