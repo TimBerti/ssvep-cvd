@@ -22,11 +22,13 @@ A way of approximating colors as seen by people with CVD was developed by Machad
 To find a color pair, that is hard to distinguish for people with CVD, but has a high contrast for people with normal vision, the following optimization problem is formulated:
 
 Objective: 
+
 $$
 \underset{c1, c2}{\operatorname{argmax}} \|c_1 - c_2\|^2
 $$
 
 Constraints: 
+
 $$
 c_1, c_2 \in [0, 1]^3, \quad M\,c_1 = M\,c_2
 $$
@@ -35,7 +37,8 @@ with $c_1$ and $c_2$ being colors in RGB space and $M$ being the transformation 
 
 The problem can be solved geometrically by constructing two colors:
 
-$$c_1 = x + \frac{d}{2} \cdot v, \quad c_2 = x - \frac{d}{2} \cdot v
+$$
+c_1 = x + \frac{d}{2} \cdot v, \quad c_2 = x - \frac{d}{2} \cdot v
 $$
 
 $$
@@ -80,9 +83,11 @@ The pipeline for the classification is as follows:
 5. Classification using a SVM with a custom kernel
 
 The custom kernel is defined as:
+
 $$
 k(x, y) = \exp\{-\gamma \cdot [\alpha \cdot \|x-y\|^2 + (1-\alpha) \cdot 2\cdot(1-\frac{x \cdot y}{\|x\|\|y\|})]\}
 $$
+
 with $\alpha = \exp\{-\beta (\|x\| + \|y\|)\}$. For more information see [notebooks/generalized_cone_kernel.ipynb](./notebooks/generalized_cone_kernel.ipynb).
 
 The hyperparameters of the Wavelet Transforms, PCA, kernel and SVM were optimized using Bayesian optimization. The objective function was the harmonic mean of the cross-validation accuracies, where the cross-validation was done using a leave-one-out strategy for each subject. 
