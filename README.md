@@ -118,7 +118,7 @@ Simulated CVD:
 
 ![Histogram CVD](./images/histogram_simulated.png)
 
-Then the likelihoods of the predictions for the test set under the fitted beta distributions are computed per subject. The final prediction for each subject is then 1, if the likelihood ratio is greater than 1 and 0 otherwise, with 1 indicating the presence of a CVD.
+Then the likelihoods of the predictions for the test set under the fitted beta distributions are computed per subject. The final prediction for each subject is 1, if the likelihood ratio is greater than 1 and 0 otherwise, with 1 indicating the presence of a CVD.
 
 The following table shows the results for the final predictions:
 
