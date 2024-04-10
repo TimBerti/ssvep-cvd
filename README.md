@@ -30,7 +30,7 @@ $$
 Constraints: 
 
 $$
-c_1, c_2 \in [0, 1]^3, \quad M \, c_1 = M \, c_2
+c_1, c_2 \in [0, 1]^3, \quad M c_1 = M c_2
 $$
 
 with $c_1$ and $c_2$ being colors in RGB space and $M$ being the transformation matrix for specific CVD.
@@ -42,7 +42,7 @@ c_1 = x + \frac{d}{2} \cdot v, \quad c_2 = x - \frac{d}{2} \cdot v
 $$
 
 $$
-\mathrm{with} \quad v = \ker(M) \quad \Rightarrow \quad M\,v=0.
+\mathrm{with} \quad v = \ker(M) \quad \Rightarrow \quad M v=0.
 $$
 
 Here $x$ acts as an anchor point and $d$ as the distance between the two colors, with $v$ assumed to be a normalized vector in the kernel of $M$. 
@@ -59,10 +59,10 @@ The code for finding the color pairs can be found in [notebooks/color_pairs_geom
 
 ## Measurement
 
-One measurement consists of four different color pairs. Each is shown for 4 seconds, with a reversal frequency of $16.5\,$Hz. In between each pair, a gray screen is shown for 3 seconds. 
+One measurement consists of four different color pairs. Each is shown for 4 seconds, with a reversal frequency of $16.5$ Hz. In between each pair, a gray screen is shown for 3 seconds. 
 Since CVDs are rare, they were simulated in subjects with regular color vision using the algorithm by Machado et al. to collect training data. 
 
-In total, 15 subjects were measured, 12 of which had normal color vision and 3 had severe red-green deficiencies. The data was collected using an 8 channel EEG with a sampling rate of $250\,$Hz. 
+In total, 15 subjects were measured, 12 of which had normal color vision and 3 had severe red-green deficiencies. The data was collected using an 8 channel EEG with a sampling rate of $250$ Hz. 
 
 For each subject 15 measurements without simulated CVD were recorded and for the subjects with regular color vision another 15 measurements with simulated CVD were recorded.
 
@@ -100,11 +100,11 @@ The hyperparameter tuning can be found in [notebooks/svm_hyperparameters.ipynb](
 
 To evaluate the model, 3 subjects with regular colors vision and the 3 subjects with red-green deficiencies were used. The 3 subjects with regular color vision were chosen at random, and all 6 subjects were not part of the training data. 
 
-The model is first evaluated on the subjects without CVD to see how well it can distinguish between measurements with and without simulated CVD. Here the model achieves an accuracy of $90.70\,$% and an AUC of $0.97$, the ROC curve is shown below.
+The model is first evaluated on the subjects without CVD to see how well it can distinguish between measurements with and without simulated CVD. Here the model achieves an accuracy of $90.70$% and an AUC of $0.97$, the ROC curve is shown below.
 
 ![ROC](./images/no_cvd_roc.png)
 
-The model is then evaluated on the subjects with real CVD, where it achieves an accuracy of $82.05\,$%.
+The model is then evaluated on the subjects with real CVD, where it achieves an accuracy of $82.05$%.
 
 Next, we will make use of having multiple measurements / predictions per subject. To get a final prediction for each subject, a beta distribution is fitted to the predictions for the training set with and without simulated CVD respectively. 
 
