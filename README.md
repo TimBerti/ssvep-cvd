@@ -24,7 +24,7 @@ To find a color pair, that is hard to distinguish for people with CVD, but has a
 Objective: 
 
 $$
-\underset{c1, c2}{\operatorname{argmax}} \|c_1 - c_2\|^2
+\underset{c1, c2}{\mathrm{argmax}} \|c_1 - c_2\|^2
 $$
 
 Constraints: 
