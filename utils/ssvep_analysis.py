@@ -146,7 +146,6 @@ def compute_running_r_values(eeg_data, marker=None, n_components=1, n_harmonics=
     stimulus_frequency = stimulus_frequency if stimulus_frequency else DEFAULT_STIMULUS_FREQUENCY
     N_samples = eeg_data.shape[0]
     window_size = window_duration * sampling_rate
-    step_size = step_size
 
     r_values = []
     marker_values = []
