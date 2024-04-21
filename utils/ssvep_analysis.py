@@ -154,7 +154,6 @@ def compute_running_r_values(eeg_data, marker=None, n_components=1, n_harmonics=
         eeg_window = eeg_window - np.mean(eeg_window, axis=0)
 
         if marker is not None:
-            # If there are multiple markers in the window, take the most common one
             marker_values.append(Counter(marker[start_idx:start_idx+window_size]).most_common(1)[0][0])
         
         cca, target = compute_cca(eeg_window, n_components, n_harmonics, sampling_rate, stimulus_frequency)
@@ -176,7 +175,6 @@ def plot_r_values(r_values, times, marker_values=None):
     for r_value, time, marker in zip(r_values, times, marker_values):
         plt.scatter(time, r_value, marker=marker_map[marker], s=30, color='black')
     
-    # Adding a legend for each unique marker
     if marker_values:
         handles = [plt.Line2D([0], [0], marker=marker, color='black', markersize=8) 
                     for marker in marker_map.values()]
