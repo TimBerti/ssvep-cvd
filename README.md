@@ -135,4 +135,4 @@ The following table shows the results for the final predictions:
 | 5 | $5.48 \cdot 10^{2}$  | 1 | 1 | 0 |
 | 6 | $3.53 \cdot 10^{2}$ | 1 | 1 | 0 |
 
-The evaluation can be found in [notebooks/svm_eval.ipynb](./notebooks/svm_eval.ipynb).
+The evaluation can be found in [notebooks/svm_generalized_cone_kernel.ipynb](./notebooks/svm_generalized_cone_kernel.ipynb).
