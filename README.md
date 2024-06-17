@@ -68,7 +68,7 @@ For each subject 15 measurements without simulated CVD were recorded and for the
 
 ## Data Preprocessing
 
-During some measurements the EEG had random spikes, because the Bluetooth connection failed for a few milliseconds, causing the buffer of the EEG to overfill. These spikes were removed by taking the first difference of the signal, setting all values above a certain threshold to zero, and then integrating the signal again. In addition, a bandpass and a notch filter were applied to the signal.
+During some measurements the EEG had random spikes, because the Bluetooth connection failed for a few milliseconds, causing the buffer of the EEG to overfill. These spikes are removed by taking the first difference of the signal, setting all values above a certain threshold to zero, and then integrating the signal again. In addition, the signal is detrended using RANSAC regression and a bandpass and a notch filter are applied to the signal.
 
 The 8 dimensional EEG signal was then reduced to a 1 dimensional signal using Canonical Correlation Analysis with a generated reference signal, consisting of a sine and a cosine wave at the stimulus frequency and its second harmonic.
 
@@ -122,17 +122,17 @@ Simulated CVD:
 
 ![Histogram CVD](./images/histogram_simulated.png)
 
-Then the likelihoods of the predictions for the test set under the fitted beta distributions are computed per subject. The final prediction for each subject is 1, if the likelihood ratio is greater than 1 and 0 otherwise, with 1 indicating the presence of a CVD.
+Then the likelihoods of the predictions for the test set under the fitted beta distributions are computed per subject. The final prediction for each subject is 1, if the likelihood ratio is greater than 1 and 0 otherwise, with 1 indicating the presence of a CVD. $p$-values are computed by bootstrapping likelihood ratios for the training set and computing the ratio of likelihood ratios more extreme than the ones of the test set.
 
 The following table shows the results for the final predictions:
 
-| Subject | Likelihood Ratio | Prediction | Actual |
-|-|-|-|-|
-| 1 | $5.95 \cdot 10^{-45}$ | 0 | 0 |
-| 2 | $1.05 \cdot 10^{-15}$ | 0 | 0 |
-| 3 | $5.06 \cdot 10^{-22}$ | 0 | 0 |
-| 4 | $2.52 \cdot 10^{44}$ | 1 | 1 |
-| 5 | $5.48 \cdot 10^{2}$  | 1 | 1 |
-| 6 | $3.53 \cdot 10^{2}$ | 1 | 1 |
+| Subject | Likelihood Ratio | Prediction | Actual | $p$-value |
+|-|-|-|-|-|
+| 1 | $5.95 \cdot 10^{-45}$ | 0 | 0 | 0.87 |
+| 2 | $1.05 \cdot 10^{-15}$ | 0 | 0 | 0.25 |
+| 3 | $5.06 \cdot 10^{-22}$ | 0 | 0 | 0.55 |
+| 4 | $2.52 \cdot 10^{44}$ | 1 | 1 | 0 |
+| 5 | $5.48 \cdot 10^{2}$  | 1 | 1 | 0 |
+| 6 | $3.53 \cdot 10^{2}$ | 1 | 1 | 0 |
 
 The evaluation can be found in [notebooks/svm_eval.ipynb](./notebooks/svm_eval.ipynb).
