@@ -10,50 +10,47 @@ from pylsl import StreamInfo, StreamOutlet
 ctk.set_appearance_mode("Light")
 ctk.set_default_color_theme("blue")
 
+DEFAULT_SETTINGS = {
+    "tile_size": 144, "color1": "127,127,127", "color2": "127,127,127",
+    "frequency": 16.5, "screen_width": 2560, "screen_height": 1440
+}
+
+PRESETS = {
+    "grey": {"color1": "127,127,127", "color2": "127,127,127"},
+    "black-and-white": {"color1": "255,255,255", "color2": "0,0,0"},
+    "deuteranomaly-1-1": {"color1": "255, 148, 7", "color2": "0, 255, 0"},
+    "deuteranomaly-2-1": {"color1": "255, 0, 7", "color2": "0, 106, 0"},
+    "deuteranomaly-3-1": {"color1": "255, 148, 255", "color2": "0, 255, 247"},
+    "deuteranomaly-4-1": {"color1": "255, 0, 255", "color2": "0, 106, 247"},
+    "deuteranomaly-1-0.25": {"color1": "159, 188, 4", "color2": "95, 214, 2"},
+    "deuteranomaly-2-0.25": {"color1": "159, 40, 4", "color2": "95, 66, 2"},
+    "deuteranomaly-3-0.25": {"color1": "159, 188, 252", "color2": "95, 214, 250"},
+    "deuteranomaly-4-0.25": {"color1": "159, 40, 252", "color2": "95, 66, 250"},
+}
+
+SERIES = {
+    "reference-series": [
+        {"preset": "grey", "duration": 4.0},
+        {"preset": "black-and-white", "duration": 4.0},
+        {"preset": "grey", "duration": 4.0},
+        {"preset": "black-and-white", "duration": 4.0},
+        {"preset": "grey", "duration": 4.0},
+    ],
+    "multicolor-deuteranomaly-series": [
+        {"preset": "grey", "duration": 2.0},
+        {"preset": "deuteranomaly-1-1", "duration": 4.0},
+        {"preset": "grey", "duration": 3.0},
+        {"preset": "deuteranomaly-3-0.25", "duration": 4.0},
+        {"preset": "grey", "duration": 3.0},
+        {"preset": "deuteranomaly-1-0.25", "duration": 4.0},
+        {"preset": "grey", "duration": 3.0},
+        {"preset": "deuteranomaly-3-1", "duration": 4.0},
+        {"preset": "grey", "duration": 2.0},
+    ],
+}
+
 
 class CheckerBoardGUI:
-
-    DEFAULT_SETTINGS = {
-        "tile_size": 144, "color1": "127,127,127", "color2": "127,127,127",
-        "frequency": 16.5, "screen_width": 2560, "screen_height": 1440
-    }
-
-    PRESETS = {
-        "grey": {"color1": "127,127,127", "color2": "127,127,127"},
-        "black-and-white": {"color1": "255,255,255", "color2": "0,0,0"},
-        "protanomaly-red": {"color1": "254, 0, 1", "color2": "128, 18, 0"},
-        "deuteranomaly-red": {"color1": "255, 0, 4", "color2": "128, 54, 0"},
-        "tritanomaly-red": {"color1": "210, 0, 51", "color2": "255, 22, 0"},
-        "deuteranomaly-1-1": {"color1": "255, 148, 7", "color2": "0, 255, 0"},
-        "deuteranomaly-2-1": {"color1": "255, 0, 7", "color2": "0, 106, 0"},
-        "deuteranomaly-3-1": {"color1": "255, 148, 255", "color2": "0, 255, 247"},
-        "deuteranomaly-4-1": {"color1": "255, 0, 255", "color2": "0, 106, 247"},
-        "deuteranomaly-1-0.25": {"color1": "159, 188, 4", "color2": "95, 214, 2"},
-        "deuteranomaly-2-0.25": {"color1": "159, 40, 4", "color2": "95, 66, 2"},
-        "deuteranomaly-3-0.25": {"color1": "159, 188, 252", "color2": "95, 214, 250"},
-        "deuteranomaly-4-0.25": {"color1": "159, 40, 252", "color2": "95, 66, 250"},
-    }
-
-    SERIES = {
-        "reference-series": [
-            {"preset": "grey", "duration": 4.0},
-            {"preset": "black-and-white", "duration": 4.0},
-            {"preset": "grey", "duration": 4.0},
-            {"preset": "black-and-white", "duration": 4.0},
-            {"preset": "grey", "duration": 4.0},
-        ],
-        "multicolor-deuteranomaly-series": [
-            {"preset": "grey", "duration": 2.0},
-            {"preset": "deuteranomaly-1-1", "duration": 4.0},
-            {"preset": "grey", "duration": 3.0},
-            {"preset": "deuteranomaly-3-0.25", "duration": 4.0},
-            {"preset": "grey", "duration": 3.0},
-            {"preset": "deuteranomaly-1-0.25", "duration": 4.0},
-            {"preset": "grey", "duration": 3.0},
-            {"preset": "deuteranomaly-3-1", "duration": 4.0},
-            {"preset": "grey", "duration": 2.0},
-        ],
-    }
 
     color_vision_deficency = {"deficiency": "Deuteranomaly", "severity": 0}
 
@@ -81,12 +78,11 @@ class CheckerBoardGUI:
         self.screen_width = ctk.CTkEntry(self.root)
         self.screen_height = ctk.CTkEntry(self.root)
         self.deficiency = ctk.CTkOptionMenu(
-            self.root, values = ["Deuteranomaly", "Protanomaly", "Tritanomaly"])
+            self.root, values=["Deuteranomaly", "Protanomaly", "Tritanomaly"])
         self.severity = ctk.DoubleVar(self.root)
-        def round_sensitivity(_):
-            self.severity.set(round(float(self.severity.get()), 2))
         self.severity_slider = ctk.CTkSlider(
-            self.root, from_=0, to=1, number_of_steps=100, variable=self.severity, command=round_sensitivity)
+            self.root, from_=0, to=1, number_of_steps=100, variable=self.severity,
+            command=lambda _: self.severity.set(round(float(self.severity.get()), 2)))
         self.slider_val = ctk.CTkLabel(self.root, textvariable=self.severity)
 
         self.tile_size.grid(row=1, column=1)
@@ -100,45 +96,47 @@ class CheckerBoardGUI:
         self.slider_val.grid(row=8, column=2)
 
         ctk.CTkButton(self.root, text="Start",
-                  command=self.start).grid(row=10, column=0, pady=10, padx=10)
+                      command=self.start).grid(row=10, column=0, pady=10, padx=10)
         ctk.CTkButton(self.root, text="Pause",
-                  command=self.pause).grid(row=10, column=1, pady=10, padx=10)
+                      command=self.pause).grid(row=10, column=1, pady=10, padx=10)
         ctk.CTkButton(self.root, text="Update",
-                  command=self.update).grid(row=10, column=2, pady=10, padx=10)
+                      command=self.update).grid(row=10, column=2, pady=10, padx=10)
 
         max_columns = 3
 
         # Calculate the total number of rows needed for the presets
-        preset_rows = len(self.PRESETS) // max_columns
-        if len(self.PRESETS) % max_columns > 0:
+        preset_rows = len(PRESETS) // max_columns
+        if len(PRESETS) % max_columns > 0:
             preset_rows += 1
 
         ctk.CTkLabel(self.root, text="Presets:").grid(row=11, column=0)
 
-        i = 0
-        for preset in self.PRESETS.keys():
+        for i, preset in enumerate(PRESETS.keys()):
             ctk.CTkButton(self.root, text=preset, command=lambda preset=preset: self.apply_settings(
-                self.PRESETS[preset])).grid(row=12 + i // max_columns, column=max_columns - 1 - ((i - 1) % max_columns), pady=10, padx=10)
-            i += 1
+                PRESETS[preset])).grid(
+                    row=12 + i // max_columns, column=max_columns - 1 - ((i - 1) % max_columns),
+                    pady=10, padx=10)
 
-        ctk.CTkLabel(self.root, text="Series:").grid(row=13 + preset_rows, column=0)
+        ctk.CTkLabel(self.root, text="Series:").grid(
+            row=13 + preset_rows, column=0)
 
         self.build_series()
-        i = 0  # Reset the counter for series buttons
-        for series in self.SERIES.items():
+        for i, series in enumerate(SERIES.items()):
             ctk.CTkButton(self.root, text=series[0], command=lambda series=series: self.run_sequence(
-                *series)).grid(row=14 + preset_rows + i // max_columns, column=max_columns - 1 - ((i - 1) % max_columns), pady=10, padx=10)
-            i += 1
+                *series)).grid(
+                    row=14 + preset_rows + i // max_columns, column=max_columns - 1 - ((i - 1) % max_columns),
+                    pady=10, padx=10)
 
-        stream_info = StreamInfo('marker', 'Markers', 2, 0, 'string', 'myuid34234')
+        stream_info = StreamInfo(
+            'marker', 'Markers', 2, 0, 'string', 'myuid34234')
         self.sender = StreamOutlet(stream_info)
-        self.apply_settings(self.DEFAULT_SETTINGS)
+        self.apply_settings(DEFAULT_SETTINGS)
 
     def build_series(self):
         n = 10
         base_color1 = np.array([255, 74, 131])
         base_color2 = np.array([0, 180, 123])
-        
+
         series = [
             {"preset": "grey", "duration": 2},
         ]
@@ -147,11 +145,12 @@ class CheckerBoardGUI:
             print(a)
             color1 = (base_color1 * a + base_color2 * (1 - a)).astype(int)
             color2 = (base_color2 * a + base_color1 * (1 - a)).astype(int)
-            self.PRESETS[f"preset_{i}"] = {"color1": ",".join(map(str, color1)), "color2": ",".join(map(str, color2))}
+            PRESETS[f"preset_{i}"] = {"color1": ",".join(
+                map(str, color1)), "color2": ",".join(map(str, color2))}
             series.append({"preset": f"preset_{i}", "duration": 2})
 
         series.append({"preset": "grey", "duration": 2})
-        self.SERIES["decreasing-series"] = series
+        SERIES["decreasing-series"] = series
 
     def start(self):
         self.board = CheckerBoard(*self._get_params())
@@ -219,7 +218,8 @@ class CheckerBoardGUI:
         self.update()
 
     def run_sequence(self, series, sequence):
-        threading.Thread(target=self._sequence, args=[series, sequence]).start()
+        threading.Thread(target=self._sequence, args=[
+                         series, sequence]).start()
 
     def _sequence(self, series, sequence):
         self.update()
@@ -229,15 +229,15 @@ class CheckerBoardGUI:
             "screen_height": self.screen_height.get(),
             "frequency": self.frequency.get(),
             "tile_size": self.tile_size.get(),
-            "deficiency": self.color_vision_deficency["deficiency"], 
+            "deficiency": self.color_vision_deficency["deficiency"],
             "severity": self.color_vision_deficency["severity"]
         })
         self.sender.push_sample(["start", meta_data])
         for step in sequence:
             self.sender.push_sample([step["preset"], meta_data])
-            self.apply_settings(self.PRESETS[step["preset"]])
+            self.apply_settings(PRESETS[step["preset"]])
             time.sleep(step["duration"])
-        self.apply_settings(self.PRESETS["grey"])
+        self.apply_settings(PRESETS["grey"])
         self.sender.push_sample(["stop", meta_data])
 
     def run(self):

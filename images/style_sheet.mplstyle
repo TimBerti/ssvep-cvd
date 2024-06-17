@@ -1,0 +1,40 @@
+# Use LaTeX to write all text
+text.usetex : True
+
+# Use 10pt font in plots, to match 10pt font in document
+font.size : 10
+
+# Use the Computer Modern Sans Serif font by default
+font.family : serif
+font.serif : Computer Modern Roman
+
+# Set the figure size to match the width of LaTeX text width
+figure.figsize : 4.9, 3.5
+
+# Set the figure dpi to get better quality output
+figure.dpi : 150
+
+# Set line width to be thin
+lines.linewidth : 1
+
+# Set the legend frame to be invisible
+legend.frameon : False
+
+# Set the grid to be light and dashed
+grid.linestyle : --
+grid.color : grey
+grid.linewidth : 0.5
+
+# Set axis labels and titles sizes
+axes.labelsize : 10
+axes.titlesize : 10
+
+# Set tick parameters
+xtick.labelsize : 8
+ytick.labelsize : 8
+
+# Set the axes spines to be less pronounced
+axes.spines.top : True
+axes.spines.right : True
+
+text.latex.preamble: \usepackage{amsmath}\usepackage{amssymb}\usepackage{siunitx}[=v2]

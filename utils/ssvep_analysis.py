@@ -8,7 +8,6 @@ from sklearn.cross_decomposition import CCA
 from sklearn.linear_model import RANSACRegressor
 from collections import Counter
 
-sns.set_theme('notebook', 'whitegrid', 'dark')
 
 DEFAULT_SAMPLING_RATE = 250
 DEFAULT_STIMULUS_FREQUENCY = 16.5
@@ -21,27 +20,29 @@ def update_default_stimulus_frequency(new_stimulus_frequency):
     global DEFAULT_STIMULUS_FREQUENCY
     DEFAULT_STIMULUS_FREQUENCY = new_stimulus_frequency
 
-def plot_eeg(eeg_data, sampling_rate=None):
+def plot_eeg(eeg_data, sampling_rate=None, channels=None):
     sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
     eeg_data = eeg_data - np.mean(eeg_data, axis=0)
 
     num_channels = eeg_data.shape[1]
+    if channels is None:
+        channels = [f'Channel {i}' for i in range(num_channels)]
     num_points = eeg_data.shape[0]
     time = np.arange(0, num_points) / sampling_rate
 
-    _, ax = plt.subplots(figsize=(12, num_channels))
+    fig, ax = plt.subplots()
 
     max_diff = np.max(np.max(eeg_data, axis=0) - np.min(eeg_data, axis=0))
     offsets = np.arange(num_channels, 0, -1) * max_diff
     
     for i in range(num_channels):
-        ax.plot(time, eeg_data[:, i] + offsets[i], label=f"Channel {i}", linewidth=0.5, color='black')
+        ax.plot(time, eeg_data[:, i] + offsets[i], label=channels[i], linewidth=0.5, color='black')
         ax.axhline(y=offsets[i], color='gray', linestyle='--', linewidth=0.5)
 
     ax.set_xlabel("Time (s)")
     ax.set_yticks(offsets)
-    ax.set_yticklabels([f"Channel {i}" for i in range(num_channels)])
-    return plt
+    ax.set_yticklabels(channels)
+    return fig, ax
 
 def apply_linear_detrending(eeg_data):
     return np.apply_along_axis(lambda x: x - np.polyval(np.polyfit(np.arange(len(x)), x, 1), np.arange(len(x))), 0, eeg_data)
@@ -61,18 +62,6 @@ def remove_artefacts(eeg_data, threshold=8):
     eeg_diff = np.insert(eeg_diff, 0, eeg_data[0], axis=0)
     return np.cumsum(eeg_diff, axis=0)
 
-def apply_lowpass_filter(eeg_data, cutoff=35, filter_order=5, sampling_rate=None):
-    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
-    normalized_cutoff = cutoff / (0.5 * sampling_rate)
-    b, a = butter(filter_order, normalized_cutoff, btype='low')
-    return np.apply_along_axis(lambda x: lfilter(b, a, x), 0, eeg_data)
-
-def apply_highpass_filter(eeg_data, cutoff=1, filter_order=5, sampling_rate=None):
-    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
-    normalized_cutoff = cutoff / (0.5 * sampling_rate)
-    b, a = butter(filter_order, normalized_cutoff, btype='high')
-    return np.apply_along_axis(lambda x: lfilter(b, a, x), 0, eeg_data)
-
 def apply_bandpass_filter(eeg_data, lowcut=1, highcut=35, filter_order=5, sampling_rate=None):
     sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
     low = lowcut / (0.5 * sampling_rate)
@@ -87,6 +76,28 @@ def apply_notch_filter(eeg_data, notch_freq=50, bandwidth=3, filter_order=5, sam
     b, a = butter(filter_order, [low, high], btype='bandstop')
     return np.apply_along_axis(lambda x: lfilter(b, a, x), 0, eeg_data)
 
+def apply_lowpass_filter(eeg_data, cutoff=35, filter_order=5, sampling_rate=None):
+    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
+    normalized_cutoff = cutoff / (0.5 * sampling_rate)
+    b, a = butter(filter_order, normalized_cutoff, btype='low')
+    return np.apply_along_axis(lambda x: lfilter(b, a, x), 0, eeg_data)
+
+def apply_highpass_filter(eeg_data, cutoff=1, filter_order=5, sampling_rate=None):
+    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
+    normalized_cutoff = cutoff / (0.5 * sampling_rate)
+    b, a = butter(filter_order, normalized_cutoff, btype='high')
+    return np.apply_along_axis(lambda x: lfilter(b, a, x), 0, eeg_data)
+
+def generate_reference_signals(n_harmonics, length, sampling_rate=None, stimulus_frequency=None):
+    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
+    stimulus_frequency = stimulus_frequency if stimulus_frequency else DEFAULT_STIMULUS_FREQUENCY
+    time_values = np.arange(0, length / sampling_rate, 1 / sampling_rate)
+    signals = []
+    for harmonic in range(n_harmonics):
+        signals.append(np.sin(2 * np.pi * stimulus_frequency * (harmonic + 1) * time_values))
+        signals.append(np.cos(2 * np.pi * stimulus_frequency * (harmonic + 1) * time_values))
+    return np.column_stack(signals)
+
 def compute_cca(eeg_data, n_components=1, n_harmonics=2, sampling_rate=None, stimulus_frequency=None):
     """
     Computes Canonical Correlation Analysis between the EEG data and a generated reference signal 
@@ -98,16 +109,6 @@ def compute_cca(eeg_data, n_components=1, n_harmonics=2, sampling_rate=None, sti
     target = generate_reference_signals(n_harmonics, eeg_data.shape[0], sampling_rate, stimulus_frequency)
     cca.fit(eeg_data, target)
     return cca, target
-
-def generate_reference_signals(n_harmonics, length, sampling_rate=None, stimulus_frequency=None):
-    sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
-    stimulus_frequency = stimulus_frequency if stimulus_frequency else DEFAULT_STIMULUS_FREQUENCY
-    time_values = np.arange(0, length / sampling_rate, 1 / sampling_rate)
-    signals = []
-    for harmonic in range(n_harmonics):
-        signals.append(np.sin(2 * np.pi * stimulus_frequency * (harmonic + 1) * time_values))
-        signals.append(np.cos(2 * np.pi * stimulus_frequency * (harmonic + 1) * time_values))
-    return np.column_stack(signals)
 
 def compute_reduced_signal(eeg_data, n_components=1, n_harmonics=2, sampling_rate=None, stimulus_frequency=None):
     """
@@ -126,20 +127,20 @@ def compute_power_spectrum(eeg_data, sampling_rate=None):
     return frequencies, spectrum
 
 def plot_power_spectrum(frequencies, spectrum):
-    plt.figure(figsize=(10, 6))
+    fig, ax = plt.subplots()
     plt.plot(frequencies, spectrum, color='black')
     plt.xlabel('Frequency (Hz)')
     plt.ylabel('Amplitude')
-    return plt
+    return fig, ax
 
 def plot_coefficient_matrix(coefficient_matrix):
-    plt.figure(figsize=(10, 6))
+    fig, ax = plt.subplots()
     ax = sns.heatmap(coefficient_matrix, cmap='binary')
     ax.set_xticklabels([f'{i}' for i in range(coefficient_matrix.shape[1])])
     ax.set_yticklabels([f'$\sin ({i//2+1}\omega)$' if i%2==0 else f'$\cos ({i//2+1}\omega)$' for i in range(coefficient_matrix.shape[0])])
     plt.xlabel('Channel')
     plt.ylabel('Harmonic / Phase')
-    return plt
+    return fig, ax
 
 def compute_running_r_values(eeg_data, marker=None, n_components=1, n_harmonics=2, window_duration=2, step_size=40, sampling_rate=None, stimulus_frequency=None):
     sampling_rate = sampling_rate if sampling_rate else DEFAULT_SAMPLING_RATE
@@ -171,7 +172,7 @@ def compute_running_r_values(eeg_data, marker=None, n_components=1, n_harmonics=
 def plot_r_values(r_values, times, marker_values=None):
     marker_map = _initialize_marker_map(marker_values)
 
-    plt.figure(figsize=(10, 6))
+    fig, ax = plt.subplots()
     for r_value, time, marker in zip(r_values, times, marker_values):
         plt.scatter(time, r_value, marker=marker_map[marker], s=30, color='black')
     
@@ -183,7 +184,7 @@ def plot_r_values(r_values, times, marker_values=None):
     
     plt.xlabel("Time (s)")
     plt.ylabel("r-Value")
-    return plt
+    return fig, ax
 
 def _initialize_marker_map(marker_values):
     unique_markers = np.unique(marker_values)
@@ -208,15 +209,15 @@ def compute_wavelet_transform(eeg_data, w=50, frequencies = np.linspace(0, 35, 3
 
 def plot_wavelet_transform(frequencies, times, cwt_matrix):
     df = pd.DataFrame(cwt_matrix, index=frequencies.round(2), columns=times.round(2))
-    plt.figure(figsize=(10, 6))
+    fig, ax = plt.subplots()
     ax = sns.heatmap(df, cmap='binary', xticklabels=10, yticklabels=10)
     ax.set_xlabel('Time (s)')
     ax.set_ylabel('Frequency (Hz)')
-    return plt
+    return fig, ax
 
 def plot_time_signal(times, amplitudes):
-    plt.figure(figsize=(10, 6))
+    fig, ax = plt.subplots()
     plt.plot(times, amplitudes, color='black')
     plt.xlabel('Time (s)')
     plt.ylabel('Amplitude')
-    return plt
+    return fig, ax
